@@ -61,8 +61,18 @@
 
                 <?php if($current_role === 'Admin' || $current_role === 'Kasir'): ?>
                 <div class="nav-item">
+                    <a href="supplier.php" class="nav-link">
+                        <i class="fas fa-truck"></i> Data Supplier
+                    </a>
+                </div>
+                <div class="nav-item">
                     <a href="barang.php" class="nav-link">
                         <i class="fas fa-boxes"></i> Data Barang
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="pembelian.php" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i> Pembelian (Restock)
                     </a>
                 </div>
                 <div class="nav-item">
