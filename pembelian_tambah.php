@@ -72,7 +72,10 @@ include 'views/layouts/header.php';
                 <div class="card">
                     <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0">Daftar Barang</h5>
-                        <button type="button" class="btn btn-sm btn-light" id="btnTambahBarang"><i class="fas fa-plus me-1"></i> Tambah Item</button>
+                        <div>
+                            <button type="button" class="btn btn-sm btn-info text-white me-2" data-bs-toggle="modal" data-bs-target="#modalBarangBaru"><i class="fas fa-box-open me-1"></i> Barang Baru</button>
+                            <button type="button" class="btn btn-sm btn-light" id="btnTambahBarang"><i class="fas fa-plus me-1"></i> Tambah Item</button>
+                        </div>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -97,6 +100,63 @@ include 'views/layouts/header.php';
         </div>
     </form>
 </section>
+
+<!-- Modal Tambah Barang Baru -->
+<div class="modal fade" id="modalBarangBaru" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title"><i class="fas fa-box-open me-2"></i>Tambah Barang Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formBarangBaru">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Kode Barang <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="kode_barang" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nama Barang <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="nama_barang" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Kategori <span class="text-danger">*</span></label>
+                        <select class="form-select" name="id_kategori" id="selectKategori" required>
+                            <option value="">Pilih Kategori...</option>
+                            <?php
+                            $q_kat = $conn->query("SELECT * FROM kategori_barang ORDER BY nama_kategori ASC");
+                            while($kat = $q_kat->fetch_assoc()) {
+                                echo "<option value='{$kat['id_kategori']}'>" . htmlspecialchars($kat['nama_kategori']) . "</option>";
+                            }
+                            ?>
+                            <option value="new" class="text-primary fw-bold">+ Tambah Kategori Baru</option>
+                        </select>
+                    </div>
+                    <div class="mb-3 d-none" id="divKategoriBaru">
+                        <label class="form-label fw-bold text-primary">Nama Kategori Baru <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control border-primary" name="nama_kategori_baru" id="inputKategoriBaru" placeholder="Masukkan nama kategori baru">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label class="form-label fw-bold">Harga Beli <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" name="harga_beli" min="0" required>
+                        </div>
+                        <div class="col">
+                            <label class="form-label fw-bold">Harga Jual <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" name="harga_jual" min="0" required>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger d-none" id="alertModal"></div>
+                    <div class="d-grid text-end">
+                        <button type="submit" class="btn btn-info text-white" id="btnSimpanBarangBaru">
+                            <i class="fas fa-save me-1"></i> Simpan Barang
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Template Row (Hidden) -->
 <template id="rowTemplate">
@@ -197,6 +257,82 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Tambah 1 baris kosong di awal
     btnTambah.click();
+
+    // Toggle input kategori baru
+    const selectKategori = document.getElementById('selectKategori');
+    const divKategoriBaru = document.getElementById('divKategoriBaru');
+    const inputKategoriBaru = document.getElementById('inputKategoriBaru');
+
+    selectKategori.addEventListener('change', function() {
+        if(this.value === 'new') {
+            divKategoriBaru.classList.remove('d-none');
+            inputKategoriBaru.required = true;
+            inputKategoriBaru.focus();
+        } else {
+            divKategoriBaru.classList.add('d-none');
+            inputKategoriBaru.required = false;
+        }
+    });
+
+    // AJAX Tambah Barang Baru
+    const formBarangBaru = document.getElementById('formBarangBaru');
+    const alertModal = document.getElementById('alertModal');
+    const btnSimpanBarangBaru = document.getElementById('btnSimpanBarangBaru');
+
+    formBarangBaru.addEventListener('submit', function(e) {
+        e.preventDefault();
+        btnSimpanBarangBaru.disabled = true;
+        btnSimpanBarangBaru.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Menyimpan...';
+        
+        const formData = new FormData(this);
+        
+        fetch('api_tambah_barang.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'success') {
+                // Tambahkan option baru ke template select
+                const optionHtml = `<option value='${data.data.id_barang}' data-harga='${data.data.harga_beli}'>${data.data.nama_barang}</option>`;
+                
+                // Tambahkan ke template
+                const templateSelect = rowTemplate.content.querySelector('.select-barang');
+                templateSelect.insertAdjacentHTML('beforeend', optionHtml);
+                
+                // Tambahkan ke semua select yang sudah ada di layar
+                document.querySelectorAll('.select-barang').forEach(select => {
+                    select.insertAdjacentHTML('beforeend', optionHtml);
+                });
+
+                // Tutup modal dan reset form
+                const modal = bootstrap.Modal.getInstance(document.getElementById('modalBarangBaru')) || new bootstrap.Modal(document.getElementById('modalBarangBaru'));
+                modal.hide();
+                formBarangBaru.reset();
+                alertModal.classList.add('d-none');
+                
+                // Optional: otomatis pilih barang baru ini di row terakhir
+                const allSelects = document.querySelectorAll('.select-barang');
+                if(allSelects.length > 0) {
+                    const lastSelect = allSelects[allSelects.length - 1];
+                    lastSelect.value = data.data.id_barang;
+                    lastSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+                
+            } else {
+                alertModal.innerText = data.message;
+                alertModal.classList.remove('d-none');
+            }
+        })
+        .catch(error => {
+            alertModal.innerText = 'Terjadi kesalahan sistem.';
+            alertModal.classList.remove('d-none');
+        })
+        .finally(() => {
+            btnSimpanBarangBaru.disabled = false;
+            btnSimpanBarangBaru.innerHTML = '<i class="fas fa-save me-1"></i> Simpan Barang';
+        });
+    });
 });
 </script>
 

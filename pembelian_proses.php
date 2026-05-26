@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $kode_pembelian = $conn->real_escape_string($_POST['kode_pembelian']);
     $tanggal = $conn->real_escape_string($_POST['tanggal']);
     $id_supplier = $conn->real_escape_string($_POST['id_supplier']);
-    $total_pembelian = (float)$_POST['total_pembelian'];
+    $total_pembelian = (float) $_POST['total_pembelian'];
 
     $id_barang_arr = $_POST['id_barang'] ?? [];
     $harga_arr = $_POST['harga'] ?? [];
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Insert into pembelian
         $query_pembelian = "INSERT INTO pembelian (kode_pembelian, id_supplier, tanggal, total) 
                             VALUES ('$kode_pembelian', '$id_supplier', '$tanggal', '$total_pembelian')";
-        
+
         if (!$conn->query($query_pembelian)) {
             throw new Exception("Gagal menyimpan data pembelian utama: " . $conn->error);
         }
@@ -38,14 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Insert details
         for ($i = 0; $i < count($id_barang_arr); $i++) {
             $id_barang = $conn->real_escape_string($id_barang_arr[$i]);
-            $harga = (float)$harga_arr[$i];
-            $qty = (int)$qty_arr[$i];
+            $harga = (float) $harga_arr[$i];
+            $qty = (int) $qty_arr[$i];
             $subtotal = $harga * $qty;
 
             if ($id_barang && $qty > 0) {
                 $query_detail = "INSERT INTO detail_pembelian (id_pembelian, id_barang, qty, harga, subtotal) 
                                  VALUES ('$id_pembelian', '$id_barang', '$qty', '$harga', '$subtotal')";
-                
+
                 if (!$conn->query($query_detail)) {
                     throw new Exception("Gagal menyimpan detail barang: " . $conn->error);
                 }

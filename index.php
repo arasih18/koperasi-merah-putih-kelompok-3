@@ -21,9 +21,26 @@ $total_penarikan = $res_penarikan ? $res_penarikan->fetch_assoc()['total'] : 0;
 
 $total_aset = $total_simpanan_masuk - $total_penarikan;
 
-// Menghitung jumlah barang di minimarket
-$res_barang = $conn->query("SELECT COUNT(*) as total FROM barang");
-$total_barang = $res_barang ? $res_barang->fetch_assoc()['total'] : 0;
+// Hitung Total Kas Koperasi
+$kas_masuk = 0;
+$kas_keluar = 0;
+
+// Kas Masuk
+$kas_masuk += $conn->query("SELECT SUM(total) as t FROM penjualan")->fetch_assoc()['t'] ?? 0;
+$kas_masuk += $conn->query("SELECT SUM(jumlah) as t FROM simpanan")->fetch_assoc()['t'] ?? 0;
+$kas_masuk += $conn->query("SELECT SUM(jumlah_bayar) as t FROM angsuran")->fetch_assoc()['t'] ?? 0;
+
+// Kas Keluar
+$kas_keluar += $conn->query("SELECT SUM(jumlah_pinjaman) as t FROM pinjaman WHERE status IN ('approved', 'lunas')")->fetch_assoc()['t'] ?? 0;
+$kas_keluar += $conn->query("SELECT SUM(total) as t FROM pembelian")->fetch_assoc()['t'] ?? 0;
+$q_beban = $conn->query("SELECT SUM(dj.debit) as t FROM detail_jurnal dj JOIN akun a ON dj.id_akun = a.id_akun WHERE a.tipe = 'beban'");
+$kas_keluar += $q_beban ? ($q_beban->fetch_assoc()['t'] ?? 0) : 0;
+
+if ($res_penarikan) { // From the previous check above
+    $kas_keluar += $total_penarikan;
+}
+
+$total_kas = $kas_masuk - $kas_keluar;
 
 // Data untuk Grafik Pertumbuhan (Pendapatan Penjualan 6 Bulan Terakhir)
 $chart_labels = [];
@@ -123,13 +140,13 @@ include 'views/layouts/header.php';
                 <!-- small box -->
                 <div class="small-box bg-slate">
                     <div class="inner">
-                        <h3><?php echo $total_barang; ?></h3>
-                        <p>Produk Toko</p>
+                        <h3>Rp <?php echo number_format($total_kas, 0, ',', '.'); ?></h3>
+                        <p>Total Kas Koperasi</p>
                     </div>
                     <div class="icon">
-                        <i class="fas fa-shopping-cart"></i>
+                        <i class="fas fa-wallet"></i>
                     </div>
-                    <a href="barang.php" class="small-box-footer">Kelola <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="laporan_keuangan.php" class="small-box-footer">Laporan <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
