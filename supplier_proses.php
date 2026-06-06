@@ -1,6 +1,6 @@
 <?php
 session_start();
-if(!isset($_SESSION['user_id']) || ($_SESSION['role'] !== 'Admin' && $_SESSION['role'] !== 'Kasir')) {
+if (!isset($_SESSION['user_id']) || ($_SESSION['role'] !== 'Admin' && $_SESSION['role'] !== 'Bendahara')) {
     header("Location: index.php");
     exit;
 }
@@ -15,36 +15,34 @@ if ($action === 'tambah') {
     $alamat = $conn->real_escape_string($_POST['alamat']);
 
     $query = "INSERT INTO supplier (nama_supplier, no_hp, alamat) VALUES ('$nama_supplier', '$no_hp', '$alamat')";
-    
+
     if ($conn->query($query)) {
         $_SESSION['success'] = "Data supplier berhasil ditambahkan!";
     } else {
         $_SESSION['error'] = "Gagal menambahkan data: " . $conn->error;
     }
-    
+
     header("Location: supplier.php");
     exit;
-} 
-elseif ($action === 'edit') {
+} elseif ($action === 'edit') {
     $id = $conn->real_escape_string($_POST['id_supplier']);
     $nama_supplier = $conn->real_escape_string($_POST['nama_supplier']);
     $no_hp = $conn->real_escape_string($_POST['no_hp']);
     $alamat = $conn->real_escape_string($_POST['alamat']);
 
     $query = "UPDATE supplier SET nama_supplier = '$nama_supplier', no_hp = '$no_hp', alamat = '$alamat' WHERE id_supplier = '$id'";
-    
+
     if ($conn->query($query)) {
         $_SESSION['success'] = "Data supplier berhasil diupdate!";
     } else {
         $_SESSION['error'] = "Gagal mengupdate data: " . $conn->error;
     }
-    
+
     header("Location: supplier.php");
     exit;
-} 
-elseif ($action === 'hapus') {
+} elseif ($action === 'hapus') {
     $id = $conn->real_escape_string($_GET['id']);
-    
+
     // Check if supplier is used in pembelian
     $check = $conn->query("SELECT id_pembelian FROM pembelian WHERE id_supplier = '$id' LIMIT 1");
     if ($check->num_rows > 0) {
@@ -57,11 +55,10 @@ elseif ($action === 'hapus') {
             $_SESSION['error'] = "Gagal menghapus data: " . $conn->error;
         }
     }
-    
+
     header("Location: supplier.php");
     exit;
-}
-else {
+} else {
     header("Location: supplier.php");
     exit;
 }

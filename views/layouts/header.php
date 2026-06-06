@@ -59,15 +59,10 @@
                 </div>
                 <?php endif; ?>
 
-                <?php if($current_role === 'Admin' || $current_role === 'Kasir'): ?>
+                <?php if($current_role === 'Admin' || $current_role === 'Bendahara'): ?>
                 <div class="nav-item">
                     <a href="supplier.php" class="nav-link">
                         <i class="fas fa-truck"></i> Data Supplier
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="barang.php" class="nav-link">
-                        <i class="fas fa-boxes"></i> Data Barang
                     </a>
                 </div>
                 <div class="nav-item">
@@ -75,6 +70,17 @@
                         <i class="fas fa-shopping-cart"></i> Pembelian (Restock)
                     </a>
                 </div>
+                <?php endif; ?>
+
+                <?php if($current_role === 'Admin' || $current_role === 'Bendahara' || $current_role === 'Kasir'): ?>
+                <div class="nav-item">
+                    <a href="barang.php" class="nav-link">
+                        <i class="fas fa-boxes"></i> Data Barang
+                    </a>
+                </div>
+                <?php endif; ?>
+
+                <?php if($current_role === 'Admin' || $current_role === 'Kasir'): ?>
                 <div class="nav-item">
                     <a href="kasir.php" class="nav-link">
                         <i class="fas fa-desktop"></i> Transaksi Kasir
@@ -96,6 +102,14 @@
                 <div class="nav-item">
                     <a href="laporan_keuangan.php" class="nav-link">
                         <i class="fas fa-chart-pie"></i> Laporan Keuangan
+                    </a>
+                </div>
+                <?php endif; ?>
+
+                <?php if($current_role === 'Admin'): ?>
+                <div class="nav-item">
+                    <a href="manajemen_user.php" class="nav-link">
+                        <i class="fas fa-users-cog"></i> Manajemen User
                     </a>
                 </div>
                 <?php endif; ?>

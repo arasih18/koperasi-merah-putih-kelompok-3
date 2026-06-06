@@ -113,6 +113,7 @@ if ($filter_pinjaman) {
                             <?php endif; ?>
                             <th class="text-center">Cicilan Ke</th>
                             <th>Tanggal Bayar</th>
+                            <th class="text-end">Denda (Rp)</th>
                             <th class="text-end">Jumlah Bayar (Rp)</th>
                         </tr>
                     </thead>
@@ -146,6 +147,9 @@ if ($filter_pinjaman) {
                                     <td class="text-center"><span
                                             class="badge bg-info">Ke-<?php echo $row['cicilan_ke']; ?></span></td>
                                     <td><?php echo date('d M Y', strtotime($row['tanggal_bayar'])); ?></td>
+                                    <td class="text-end text-danger">
+                                        <?php echo isset($row['denda']) && $row['denda'] > 0 ? '+ ' . number_format($row['denda'], 0, ',', '.') : '-'; ?>
+                                    </td>
                                     <td class="text-end fw-bold text-success">
                                         + <?php echo number_format($row['jumlah_bayar'], 0, ',', '.'); ?>
                                     </td>

@@ -78,6 +78,24 @@ include 'views/layouts/header.php';
                     Anda berhasil login sebagai <span class="badge bg-crimson"><?php echo htmlspecialchars($_SESSION['role'] ?? 'Anggota'); ?></span>. Semoga harimu produktif!
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+                
+                <?php
+                // Cek stok barang menipis (<= 5)
+                $q_stok = $conn->query("SELECT kode_barang, nama_barang, stok FROM barang WHERE stok <= 5 ORDER BY stok ASC");
+                if ($q_stok && $q_stok->num_rows > 0):
+                ?>
+                <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert" style="border-left: 5px solid darkred;">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Peringatan Stok Menipis!</strong> Terdapat <strong><?php echo $q_stok->num_rows; ?></strong> barang yang perlu segera di-restock:
+                    <ul class="mt-2 mb-0 ps-3">
+                        <?php while($brg = $q_stok->fetch_assoc()): ?>
+                            <li><?php echo htmlspecialchars($brg['nama_barang']); ?> (Sisa stok: <strong><?php echo $brg['stok']; ?></strong>)</li>
+                        <?php endwhile; ?>
+                    </ul>
+                    <a href="pembelian.php" class="alert-link mt-2 d-inline-block text-decoration-underline"><i class="fas fa-shopping-cart"></i> Lakukan Pembelian Restock</a>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -196,7 +214,7 @@ include 'views/layouts/header.php';
                             </li>
                             <?php endif; ?>
                             <li class="list-group-item p-3">
-                                <button class="btn btn-outline-secondary w-100 text-start"><i class="fas fa-print me-2"></i> Cetak Laporan</button>
+                                <a href="laporan_keuangan.php" class="btn btn-outline-secondary w-100 text-start"><i class="fas fa-print me-2"></i> Cetak Laporan Keuangan</a>
                             </li>
                         </ul>
                     </div>

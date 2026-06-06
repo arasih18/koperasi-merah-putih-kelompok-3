@@ -1,6 +1,6 @@
 <?php
 session_start();
-if(!isset($_SESSION['user_id']) || ($_SESSION['role'] !== 'Admin' && $_SESSION['role'] !== 'Kasir')) {
+if (!isset($_SESSION['user_id']) || ($_SESSION['role'] !== 'Admin' && $_SESSION['role'] !== 'Bendahara')) {
     header("Location: index.php");
     exit;
 }
@@ -25,19 +25,21 @@ include 'views/layouts/header.php';
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Kode Barang</label>
-                        <input type="text" name="kode_barang" class="form-control" placeholder="Contoh: BRG001" required>
+                        <input type="text" name="kode_barang" class="form-control" placeholder="Contoh: BRG001"
+                            required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Kategori</label>
                         <select name="id_kategori" class="form-select" required>
                             <option value="">-- Pilih Kategori --</option>
-                            <?php while($k = $kategori_query->fetch_assoc()): ?>
-                            <option value="<?php echo $k['id_kategori']; ?>"><?php echo htmlspecialchars($k['nama_kategori']); ?></option>
+                            <?php while ($k = $kategori_query->fetch_assoc()): ?>
+                                <option value="<?php echo $k['id_kategori']; ?>">
+                                    <?php echo htmlspecialchars($k['nama_kategori']); ?></option>
                             <?php endwhile; ?>
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="mb-3">
                     <label class="form-label fw-bold">Nama Barang</label>
                     <input type="text" name="nama_barang" class="form-control" required>
@@ -61,7 +63,8 @@ include 'views/layouts/header.php';
                 <hr>
                 <div class="d-flex justify-content-end">
                     <button type="reset" class="btn btn-light me-2">Reset</button>
-                    <button type="submit" class="btn btn-crimson"><i class="fas fa-save me-1"></i> Simpan Barang</button>
+                    <button type="submit" class="btn btn-crimson"><i class="fas fa-save me-1"></i> Simpan
+                        Barang</button>
                 </div>
             </form>
         </div>

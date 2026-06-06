@@ -36,11 +36,14 @@ include 'views/layouts/header.php';
                     <div class="card-body">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Kode Pembelian</label>
-                            <input type="text" class="form-control" name="kode_pembelian" value="<?php echo $kode_pembelian; ?>" readonly>
+                            <input type="text" class="form-control" name="kode_pembelian"
+                                value="<?php echo $kode_pembelian; ?>" readonly>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Tanggal Pembelian <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" name="tanggal" value="<?php echo date('Y-m-d'); ?>" required>
+                            <label class="form-label fw-bold">Tanggal Pembelian <span
+                                    class="text-danger">*</span></label>
+                            <input type="date" class="form-control" name="tanggal" value="<?php echo date('Y-m-d'); ?>"
+                                required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-bold">Supplier <span class="text-danger">*</span></label>
@@ -48,7 +51,7 @@ include 'views/layouts/header.php';
                                 <option value="">-- Pilih Supplier --</option>
                                 <?php
                                 $q_sup = $conn->query("SELECT * FROM supplier ORDER BY nama_supplier ASC");
-                                while($sup = $q_sup->fetch_assoc()) {
+                                while ($sup = $q_sup->fetch_assoc()) {
                                     echo "<option value='{$sup['id_supplier']}'>" . htmlspecialchars($sup['nama_supplier']) . "</option>";
                                 }
                                 ?>
@@ -56,13 +59,14 @@ include 'views/layouts/header.php';
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="card mb-3">
                     <div class="card-body text-center bg-light">
                         <h5 class="text-muted text-uppercase mb-2">Total Pembayaran</h5>
                         <h2 class="mb-0 fw-bold text-danger" id="displayTotal">Rp 0</h2>
                         <input type="hidden" name="total_pembelian" id="inputTotal" value="0">
-                        <button type="submit" class="btn btn-crimson btn-lg w-100 mt-4" id="btnSimpan" disabled><i class="fas fa-save me-1"></i> Simpan Transaksi</button>
+                        <button type="submit" class="btn btn-crimson btn-lg w-100 mt-4" id="btnSimpan" disabled><i
+                                class="fas fa-save me-1"></i> Simpan Transaksi</button>
                     </div>
                 </div>
             </div>
@@ -73,8 +77,11 @@ include 'views/layouts/header.php';
                     <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0">Daftar Barang</h5>
                         <div>
-                            <button type="button" class="btn btn-sm btn-info text-white me-2" data-bs-toggle="modal" data-bs-target="#modalBarangBaru"><i class="fas fa-box-open me-1"></i> Barang Baru</button>
-                            <button type="button" class="btn btn-sm btn-light" id="btnTambahBarang"><i class="fas fa-plus me-1"></i> Tambah Item</button>
+                            <button type="button" class="btn btn-sm btn-info text-white me-2" data-bs-toggle="modal"
+                                data-bs-target="#modalBarangBaru"><i class="fas fa-box-open me-1"></i> Barang
+                                Baru</button>
+                            <button type="button" class="btn btn-sm btn-light" id="btnTambahBarang"><i
+                                    class="fas fa-plus me-1"></i> Tambah Item</button>
                         </div>
                     </div>
                     <div class="card-body p-0">
@@ -125,7 +132,7 @@ include 'views/layouts/header.php';
                             <option value="">Pilih Kategori...</option>
                             <?php
                             $q_kat = $conn->query("SELECT * FROM kategori_barang ORDER BY nama_kategori ASC");
-                            while($kat = $q_kat->fetch_assoc()) {
+                            while ($kat = $q_kat->fetch_assoc()) {
                                 echo "<option value='{$kat['id_kategori']}'>" . htmlspecialchars($kat['nama_kategori']) . "</option>";
                             }
                             ?>
@@ -133,8 +140,10 @@ include 'views/layouts/header.php';
                         </select>
                     </div>
                     <div class="mb-3 d-none" id="divKategoriBaru">
-                        <label class="form-label fw-bold text-primary">Nama Kategori Baru <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control border-primary" name="nama_kategori_baru" id="inputKategoriBaru" placeholder="Masukkan nama kategori baru">
+                        <label class="form-label fw-bold text-primary">Nama Kategori Baru <span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control border-primary" name="nama_kategori_baru"
+                            id="inputKategoriBaru" placeholder="Masukkan nama kategori baru">
                     </div>
                     <div class="row mb-3">
                         <div class="col">
@@ -167,7 +176,7 @@ include 'views/layouts/header.php';
                 <?php
                 $q_brg = $conn->query("SELECT id_barang, nama_barang, harga_beli FROM barang ORDER BY nama_barang ASC");
                 $data_barang = [];
-                while($brg = $q_brg->fetch_assoc()) {
+                while ($brg = $q_brg->fetch_assoc()) {
                     $data_barang[$brg['id_barang']] = $brg['harga_beli'];
                     echo "<option value='{$brg['id_barang']}' data-harga='{$brg['harga_beli']}'>" . htmlspecialchars($brg['nama_barang']) . "</option>";
                 }
@@ -190,150 +199,150 @@ include 'views/layouts/header.php';
 </template>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const tableBody = document.querySelector('#tableBarang tbody');
-    const rowTemplate = document.getElementById('rowTemplate');
-    const btnTambah = document.getElementById('btnTambahBarang');
-    const displayTotal = document.getElementById('displayTotal');
-    const inputTotal = document.getElementById('inputTotal');
-    const btnSimpan = document.getElementById('btnSimpan');
+    document.addEventListener('DOMContentLoaded', function () {
+        const tableBody = document.querySelector('#tableBarang tbody');
+        const rowTemplate = document.getElementById('rowTemplate');
+        const btnTambah = document.getElementById('btnTambahBarang');
+        const displayTotal = document.getElementById('displayTotal');
+        const inputTotal = document.getElementById('inputTotal');
+        const btnSimpan = document.getElementById('btnSimpan');
 
-    // Format number to Rupiah
-    function formatRupiah(angka) {
-        return new Intl.NumberFormat('id-ID').format(angka);
-    }
+        // Format number to Rupiah
+        function formatRupiah(angka) {
+            return new Intl.NumberFormat('id-ID').format(angka);
+        }
 
-    // Hitung total keseluruhan
-    function hitungTotal() {
-        let total = 0;
-        const rows = document.querySelectorAll('.item-row');
-        
-        rows.forEach(row => {
-            const harga = parseFloat(row.querySelector('.input-harga').value) || 0;
-            const qty = parseInt(row.querySelector('.input-qty').value) || 0;
-            const subtotal = harga * qty;
-            
-            row.querySelector('.input-subtotal').value = formatRupiah(subtotal);
-            total += subtotal;
+        // Hitung total keseluruhan
+        function hitungTotal() {
+            let total = 0;
+            const rows = document.querySelectorAll('.item-row');
+
+            rows.forEach(row => {
+                const harga = parseFloat(row.querySelector('.input-harga').value) || 0;
+                const qty = parseInt(row.querySelector('.input-qty').value) || 0;
+                const subtotal = harga * qty;
+
+                row.querySelector('.input-subtotal').value = formatRupiah(subtotal);
+                total += subtotal;
+            });
+
+            displayTotal.innerText = 'Rp ' + formatRupiah(total);
+            inputTotal.value = total;
+
+            // Disable simpan jika tidak ada barang atau total 0
+            btnSimpan.disabled = (rows.length === 0 || total === 0);
+        }
+
+        // Tambah baris baru
+        btnTambah.addEventListener('click', function () {
+            const clone = rowTemplate.content.cloneNode(true);
+            tableBody.appendChild(clone);
+            hitungTotal();
         });
 
-        displayTotal.innerText = 'Rp ' + formatRupiah(total);
-        inputTotal.value = total;
-        
-        // Disable simpan jika tidak ada barang atau total 0
-        btnSimpan.disabled = (rows.length === 0 || total === 0);
-    }
-
-    // Tambah baris baru
-    btnTambah.addEventListener('click', function() {
-        const clone = rowTemplate.content.cloneNode(true);
-        tableBody.appendChild(clone);
-        hitungTotal();
-    });
-
-    // Delegasi event untuk tabel (karena dinamis)
-    tableBody.addEventListener('change', function(e) {
-        if (e.target.classList.contains('select-barang')) {
-            const selectedOption = e.target.options[e.target.selectedIndex];
-            const hargaBeli = selectedOption.getAttribute('data-harga');
-            const row = e.target.closest('tr');
-            row.querySelector('.input-harga').value = hargaBeli || 0;
-            hitungTotal();
-        }
-    });
-
-    tableBody.addEventListener('input', function(e) {
-        if (e.target.classList.contains('input-harga') || e.target.classList.contains('input-qty')) {
-            hitungTotal();
-        }
-    });
-
-    tableBody.addEventListener('click', function(e) {
-        if (e.target.closest('.btn-hapus')) {
-            e.target.closest('tr').remove();
-            hitungTotal();
-        }
-    });
-
-    // Tambah 1 baris kosong di awal
-    btnTambah.click();
-
-    // Toggle input kategori baru
-    const selectKategori = document.getElementById('selectKategori');
-    const divKategoriBaru = document.getElementById('divKategoriBaru');
-    const inputKategoriBaru = document.getElementById('inputKategoriBaru');
-
-    selectKategori.addEventListener('change', function() {
-        if(this.value === 'new') {
-            divKategoriBaru.classList.remove('d-none');
-            inputKategoriBaru.required = true;
-            inputKategoriBaru.focus();
-        } else {
-            divKategoriBaru.classList.add('d-none');
-            inputKategoriBaru.required = false;
-        }
-    });
-
-    // AJAX Tambah Barang Baru
-    const formBarangBaru = document.getElementById('formBarangBaru');
-    const alertModal = document.getElementById('alertModal');
-    const btnSimpanBarangBaru = document.getElementById('btnSimpanBarangBaru');
-
-    formBarangBaru.addEventListener('submit', function(e) {
-        e.preventDefault();
-        btnSimpanBarangBaru.disabled = true;
-        btnSimpanBarangBaru.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Menyimpan...';
-        
-        const formData = new FormData(this);
-        
-        fetch('api_tambah_barang.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if(data.status === 'success') {
-                // Tambahkan option baru ke template select
-                const optionHtml = `<option value='${data.data.id_barang}' data-harga='${data.data.harga_beli}'>${data.data.nama_barang}</option>`;
-                
-                // Tambahkan ke template
-                const templateSelect = rowTemplate.content.querySelector('.select-barang');
-                templateSelect.insertAdjacentHTML('beforeend', optionHtml);
-                
-                // Tambahkan ke semua select yang sudah ada di layar
-                document.querySelectorAll('.select-barang').forEach(select => {
-                    select.insertAdjacentHTML('beforeend', optionHtml);
-                });
-
-                // Tutup modal dan reset form
-                const modal = bootstrap.Modal.getInstance(document.getElementById('modalBarangBaru')) || new bootstrap.Modal(document.getElementById('modalBarangBaru'));
-                modal.hide();
-                formBarangBaru.reset();
-                alertModal.classList.add('d-none');
-                
-                // Optional: otomatis pilih barang baru ini di row terakhir
-                const allSelects = document.querySelectorAll('.select-barang');
-                if(allSelects.length > 0) {
-                    const lastSelect = allSelects[allSelects.length - 1];
-                    lastSelect.value = data.data.id_barang;
-                    lastSelect.dispatchEvent(new Event('change', { bubbles: true }));
-                }
-                
-            } else {
-                alertModal.innerText = data.message;
-                alertModal.classList.remove('d-none');
+        // Delegasi event untuk tabel (karena dinamis)
+        tableBody.addEventListener('change', function (e) {
+            if (e.target.classList.contains('select-barang')) {
+                const selectedOption = e.target.options[e.target.selectedIndex];
+                const hargaBeli = selectedOption.getAttribute('data-harga');
+                const row = e.target.closest('tr');
+                row.querySelector('.input-harga').value = hargaBeli || 0;
+                hitungTotal();
             }
-        })
-        .catch(error => {
-            alertModal.innerText = 'Terjadi kesalahan sistem.';
-            alertModal.classList.remove('d-none');
-        })
-        .finally(() => {
-            btnSimpanBarangBaru.disabled = false;
-            btnSimpanBarangBaru.innerHTML = '<i class="fas fa-save me-1"></i> Simpan Barang';
+        });
+
+        tableBody.addEventListener('input', function (e) {
+            if (e.target.classList.contains('input-harga') || e.target.classList.contains('input-qty')) {
+                hitungTotal();
+            }
+        });
+
+        tableBody.addEventListener('click', function (e) {
+            if (e.target.closest('.btn-hapus')) {
+                e.target.closest('tr').remove();
+                hitungTotal();
+            }
+        });
+
+        // Tambah 1 baris kosong di awal
+        btnTambah.click();
+
+        // Toggle input kategori baru
+        const selectKategori = document.getElementById('selectKategori');
+        const divKategoriBaru = document.getElementById('divKategoriBaru');
+        const inputKategoriBaru = document.getElementById('inputKategoriBaru');
+
+        selectKategori.addEventListener('change', function () {
+            if (this.value === 'new') {
+                divKategoriBaru.classList.remove('d-none');
+                inputKategoriBaru.required = true;
+                inputKategoriBaru.focus();
+            } else {
+                divKategoriBaru.classList.add('d-none');
+                inputKategoriBaru.required = false;
+            }
+        });
+
+        // AJAX Tambah Barang Baru
+        const formBarangBaru = document.getElementById('formBarangBaru');
+        const alertModal = document.getElementById('alertModal');
+        const btnSimpanBarangBaru = document.getElementById('btnSimpanBarangBaru');
+
+        formBarangBaru.addEventListener('submit', function (e) {
+            e.preventDefault();
+            btnSimpanBarangBaru.disabled = true;
+            btnSimpanBarangBaru.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Menyimpan...';
+
+            const formData = new FormData(this);
+
+            fetch('api_tambah_barang.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Tambahkan option baru ke template select
+                        const optionHtml = `<option value='${data.data.id_barang}' data-harga='${data.data.harga_beli}'>${data.data.nama_barang}</option>`;
+
+                        // Tambahkan ke template
+                        const templateSelect = rowTemplate.content.querySelector('.select-barang');
+                        templateSelect.insertAdjacentHTML('beforeend', optionHtml);
+
+                        // Tambahkan ke semua select yang sudah ada di layar
+                        document.querySelectorAll('.select-barang').forEach(select => {
+                            select.insertAdjacentHTML('beforeend', optionHtml);
+                        });
+
+                        // Tutup modal dan reset form
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('modalBarangBaru')) || new bootstrap.Modal(document.getElementById('modalBarangBaru'));
+                        modal.hide();
+                        formBarangBaru.reset();
+                        alertModal.classList.add('d-none');
+
+                        // Optional: otomatis pilih barang baru ini di row terakhir
+                        const allSelects = document.querySelectorAll('.select-barang');
+                        if (allSelects.length > 0) {
+                            const lastSelect = allSelects[allSelects.length - 1];
+                            lastSelect.value = data.data.id_barang;
+                            lastSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+
+                    } else {
+                        alertModal.innerText = data.message;
+                        alertModal.classList.remove('d-none');
+                    }
+                })
+                .catch(error => {
+                    alertModal.innerText = 'Terjadi kesalahan sistem.';
+                    alertModal.classList.remove('d-none');
+                })
+                .finally(() => {
+                    btnSimpanBarangBaru.disabled = false;
+                    btnSimpanBarangBaru.innerHTML = '<i class="fas fa-save me-1"></i> Simpan Barang';
+                });
         });
     });
-});
 </script>
 
 <?php include 'views/layouts/footer.php'; ?>

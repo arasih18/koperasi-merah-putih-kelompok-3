@@ -1,6 +1,6 @@
 <?php
 session_start();
-if(!isset($_SESSION['user_id']) || ($_SESSION['role'] !== 'Admin' && $_SESSION['role'] !== 'Kasir')) {
+if(!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['Admin', 'Bendahara', 'Kasir'])) {
     header("Location: index.php");
     exit;
 }
@@ -12,7 +12,9 @@ include 'views/layouts/header.php';
 <div class="content-header">
     <div class="d-flex justify-content-between align-items-center">
         <h1 class="m-0"><i class="fas fa-boxes me-2"></i> Data Barang Minimarket</h1>
+        <?php if($_SESSION['role'] !== 'Kasir'): ?>
         <a href="barang_tambah.php" class="btn btn-crimson"><i class="fas fa-plus me-1"></i> Tambah Barang</a>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -74,7 +76,9 @@ include 'views/layouts/header.php';
                                 <?php endif; ?>
                             </td>
                             <td class="text-center">
+                                <?php if($_SESSION['role'] !== 'Kasir'): ?>
                                 <a href="barang_edit.php?id=<?php echo $row['id_barang']; ?>" class="btn btn-sm btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
+                                <?php endif; ?>
                                 <?php if($_SESSION['role'] === 'Admin'): ?>
                                 <a href="barang_proses.php?action=hapus&id=<?php echo $row['id_barang']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Hapus barang ini?');" title="Hapus"><i class="fas fa-trash-alt"></i></a>
                                 <?php endif; ?>

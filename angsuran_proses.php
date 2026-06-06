@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id_pinjaman = intval($_POST['id_pinjaman']);
     $tanggal_bayar = $conn->real_escape_string($_POST['tanggal_bayar']);
     $jumlah_bayar = floatval($_POST['jumlah_bayar']);
+    $denda = isset($_POST['denda']) ? floatval($_POST['denda']) : 0;
     $cicilan_ke = intval($_POST['cicilan_ke']);
 
     // 1. Dapatkan informasi pinjaman untuk cek lunas atau tidak
@@ -23,8 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $pin = $q_pinjaman->fetch_assoc();
 
     // Insert angsuran
-    $query = "INSERT INTO angsuran (id_pinjaman, cicilan_ke, jumlah_bayar, tanggal_bayar) 
-              VALUES ($id_pinjaman, $cicilan_ke, $jumlah_bayar, '$tanggal_bayar')";
+    $query = "INSERT INTO angsuran (id_pinjaman, cicilan_ke, jumlah_bayar, denda, tanggal_bayar) 
+              VALUES ($id_pinjaman, $cicilan_ke, $jumlah_bayar, $denda, '$tanggal_bayar')";
     
     if ($conn->query($query)) {
         // Cek total terbayar
@@ -44,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $msg_lunas = "";
         }
 
-        $conn->query("INSERT INTO audit_log (id_user, aksi, nama_tabel, data_baru) VALUES (".$_SESSION['user_id'].", 'INSERT', 'angsuran', 'Input angsuran ke-$cicilan_ke untuk pinjaman ID $id_pinjaman sebesar $jumlah_bayar')");
+        $conn->query("INSERT INTO audit_log (id_user, aksi, nama_tabel, data_baru) VALUES (".$_SESSION['user_id'].", 'INSERT', 'angsuran', 'Input angsuran ke-$cicilan_ke untuk pinjaman ID $id_pinjaman sebesar $jumlah_bayar + denda $denda')");
         
         $_SESSION['success'] = "Angsuran berhasil disimpan" . $msg_lunas;
     } else {

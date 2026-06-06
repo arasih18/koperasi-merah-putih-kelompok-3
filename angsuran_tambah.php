@@ -49,17 +49,22 @@ $filter_pinjaman = isset($_GET['id_pinjaman']) ? intval($_GET['id_pinjaman']) : 
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Tanggal Bayar <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" name="tanggal_bayar" value="<?php echo date('Y-m-d'); ?>" required>
+                        <input type="date" class="form-control" name="tanggal_bayar" id="tanggal_bayar" value="<?php echo date('Y-m-d'); ?>" required>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label class="form-label">Jumlah Bayar (Rp) <span class="text-danger">*</span></label>
                         <input type="number" class="form-control" name="jumlah_bayar" id="jumlah_bayar" min="1000" step="1000" required>
                         <small class="text-muted" id="rekomendasi_bayar"></small>
                     </div>
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Denda (Rp)</label>
+                        <input type="number" class="form-control" name="denda" id="denda" min="0" value="0" required>
+                        <small class="text-danger" id="info_denda" style="font-size: 0.8rem;"></small>
+                    </div>
+                    <div class="col-md-4 mb-3">
                         <label class="form-label">Cicilan Ke <span class="text-danger">*</span></label>
                         <input type="number" class="form-control" name="cicilan_ke" id="cicilan_ke" min="1" required>
                     </div>
@@ -95,8 +100,9 @@ $filter_pinjaman = isset($_GET['id_pinjaman']) ? intval($_GET['id_pinjaman']) : 
         $lama = $pin['lama_angsuran'];
         
         $cicilan_per_bulan = ceil($total_hutang / $lama);
+        $tanggal_pinjam = $pin['tanggal_pinjam'];
         
-        echo "$id: { cicilan_ke: $cicilan_ke, cicilan_per_bulan: $cicilan_per_bulan },\n";
+        echo "$id: { cicilan_ke: $cicilan_ke, cicilan_per_bulan: $cicilan_per_bulan, tanggal_pinjam: '$tanggal_pinjam' },\n";
     }
     ?>
     };
@@ -107,12 +113,53 @@ $filter_pinjaman = isset($_GET['id_pinjaman']) ? intval($_GET['id_pinjaman']) : 
             document.getElementById('cicilan_ke').value = pinjamanData[id].cicilan_ke;
             document.getElementById('jumlah_bayar').value = pinjamanData[id].cicilan_per_bulan;
             document.getElementById('rekomendasi_bayar').innerText = "Rekomendasi cicilan per bulan: Rp " + new Intl.NumberFormat('id-ID').format(pinjamanData[id].cicilan_per_bulan);
+            hitungDenda(id);
         } else {
             document.getElementById('cicilan_ke').value = '';
             document.getElementById('jumlah_bayar').value = '';
             document.getElementById('rekomendasi_bayar').innerText = '';
+            document.getElementById('denda').value = '0';
+            document.getElementById('info_denda').innerText = '';
         }
     }
+
+    function hitungDenda(id) {
+        if(!id || !pinjamanData[id]) return;
+        
+        const tanggal_bayar = new Date(document.getElementById('tanggal_bayar').value);
+        const tanggal_pinjam = new Date(pinjamanData[id].tanggal_pinjam);
+        const cicilan_ke = parseInt(pinjamanData[id].cicilan_ke);
+        
+        // Jatuh tempo: tanggal pinjam + (cicilan_ke * bulan)
+        let jatuh_tempo = new Date(tanggal_pinjam);
+        jatuh_tempo.setMonth(jatuh_tempo.getMonth() + cicilan_ke);
+        
+        const info_denda = document.getElementById('info_denda');
+        const input_denda = document.getElementById('denda');
+        
+        tanggal_bayar.setHours(0,0,0,0);
+        jatuh_tempo.setHours(0,0,0,0);
+        
+        const diffTime = tanggal_bayar.getTime() - jatuh_tempo.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays > 0) {
+            // Denda Rp 1.000 per hari
+            const dendaRp = diffDays * 1000;
+            input_denda.value = dendaRp;
+            info_denda.innerText = `Terlambat ${diffDays} hari (Jatuh tempo: ${jatuh_tempo.toLocaleDateString('id-ID')})`;
+            info_denda.className = "text-danger";
+        } else {
+            input_denda.value = 0;
+            info_denda.innerText = `Belum jatuh tempo (Jatuh tempo: ${jatuh_tempo.toLocaleDateString('id-ID')})`;
+            info_denda.className = "text-success";
+        }
+    }
+
+    document.getElementById('tanggal_bayar').addEventListener('change', function() {
+        const id = document.getElementById('id_pinjaman').value;
+        hitungDenda(id);
+    });
 
     // Initialize if pre-selected
     window.onload = function() {

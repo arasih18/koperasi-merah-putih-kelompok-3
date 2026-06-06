@@ -150,7 +150,7 @@ if (isset($_SESSION['user_id'])) {
             <div class="card-header">
                 <img src="assets/img/logo.png" alt="Logo">
                 <h3 class="mb-0">Koperasi <span style="color: #ff5252;">MP</span></h3>
-                <p class="text-muted mt-1 mb-0">Khas kelompok 3</p>
+                <p class="text-muted mt-1 mb-0">Kelompok 3</p>
             </div>
             <div class="card-body p-4">
                 <?php if (isset($_SESSION['error'])): ?>
