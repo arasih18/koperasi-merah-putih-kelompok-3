@@ -9,7 +9,7 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom AdminLTE-style CSS -->
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=1.1">
 </head>
 <body>
     <div class="wrapper">
@@ -131,10 +131,22 @@
                 <div class="d-flex align-items-center gap-3">
                     <span class="text-muted"><i class="fas fa-calendar-alt me-1"></i> <?php echo date('d M Y'); ?></span>
                     <div class="dropdown">
-                        <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                        <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($_SESSION['nama'] ?? 'User'); ?>&background=C62828&color=fff" alt="User" class="rounded-circle" width="32">
                             <span class="ms-2 d-none d-md-inline"><?php echo isset($_SESSION['nama']) ? htmlspecialchars($_SESSION['nama']) : 'Administrator'; ?></span>
                         </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="profileDropdown">
+                            <li class="px-3 py-2">
+                                <div class="fw-bold"><?php echo isset($_SESSION['nama']) ? htmlspecialchars($_SESSION['nama']) : 'User'; ?></div>
+                                <small class="text-muted"><?php echo isset($_SESSION['role']) ? htmlspecialchars($_SESSION['role']) : 'Role'; ?></small>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="logout.php">
+                                    <i class="fas fa-sign-out-alt"></i> Keluar
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </header>

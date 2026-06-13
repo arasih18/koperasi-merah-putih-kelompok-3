@@ -29,13 +29,29 @@ body {
 /* Sidebar */
 .sidebar {
     width: 250px;
-    min-height: 100vh;
+    height: 100vh;
+    overflow-y: auto;
     background-color: var(--primary-color);
     box-shadow: 0 14px 28px rgba(6, 41, 44, 0.807), 0 10px 10px rgba(0, 0, 0, .22);
     transition: transform 0.3s ease-in-out;
     position: fixed;
     z-index: 1000;
     transform: translateX(0);
+}
+
+/* Custom Scrollbar for Sidebar */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+.sidebar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
 }
 
 .wrapper.sidebar-collapse .sidebar {
